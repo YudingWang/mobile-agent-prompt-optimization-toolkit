@@ -1,0 +1,7 @@
+Episode 1: Reward = 0
+Episode 2: Reward = 1
+Episode 3: Reward = 1
+Episode 4: Reward = 1
+Episode 5: Reward = 1
+Final Learned Prompt: CLICK("Slack App List")
+Success Rate: 80.00%

@@ -1,0 +1,4 @@
+Goal: Uninstall Slack
+Current screen: Settings > Apps
+Options: ['Slack', 'Permissions', 'App Info']
+Action: CLICK("Slack")

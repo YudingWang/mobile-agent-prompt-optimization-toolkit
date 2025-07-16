@@ -1,18 +1,35 @@
-# gemini_prompting.py
-# Simulate prompt generation from a UI screenshot and goal
+# gemini_prompting.py (Gemini 2.5 Vision Version)
 
-import os
+import google.generativeai as genai
+import base64
+from PIL import Image
+import io
 
-def generate_prompt(goal, screen, options):
-    prompt = f"Goal: {goal}\nCurrent screen: {screen}\nOptions: {options}\nAction: CLICK(\"{options[0]}\")"
-    print(prompt)
-    return prompt
+def load_image_bytes(image_path):
+    with open(image_path, "rb") as img_file:
+        return img_file.read()
+
+def generate_prompt_from_image(image_path, task_goal):
+    image_bytes = load_image_bytes(image_path)
+
+    model = genai.GenerativeModel("gemini-pro-vision")
+    response = model.generate_content([
+        {"text": f"Goal: {task_goal}. Based on this screenshot, what should the user do next?"},
+        {"image": image_bytes}
+    ])
+
+    result = response.text
+    print("Generated Prompt:")
+    print(result)
+    return result
 
 if __name__ == "__main__":
-    goal = "Uninstall Slack"
-    screen = "Settings > Apps"
-    options = ["Slack", "Permissions", "App Info"]
-    prompt = generate_prompt(goal, screen, options)
+    import os
 
-    with open("results/gemini_log.txt", "w") as f:
-        f.write(prompt + "\n")
+    # Replace with your actual API key
+    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+    # Example usage
+    task_goal = "Uninstall Slack"
+    image_path = "screenshot.png"  # Provide your own screenshot
+    generate_prompt_from_image(image_path, task_goal)

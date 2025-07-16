@@ -1,0 +1,3 @@
+Original Prompt: CLICK("AliExpress")
+Optimized Prompt: CLICK("AliExpress App Icon")
+Reward improved from 0.6 → 1.0

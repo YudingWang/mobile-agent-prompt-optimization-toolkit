@@ -1,0 +1,4 @@
+Gemini Prompt Output:
+The user should long-press the AliExpress icon.  This will bring up options to uninstall or move the app.  Then select uninstall.
+
+Action: UNKNOWN

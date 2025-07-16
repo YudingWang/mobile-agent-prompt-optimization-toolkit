@@ -1,35 +1,61 @@
-# gemini_prompting.py (Gemini 2.5 Vision Version)
-
+import os
+import re
 import google.generativeai as genai
-import base64
-from PIL import Image
-import io
 
-def load_image_bytes(image_path):
-    with open(image_path, "rb") as img_file:
-        return img_file.read()
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
-def generate_prompt_from_image(image_path, task_goal):
-    image_bytes = load_image_bytes(image_path)
+with open("screenshot.png", "rb") as f:
+    image_data = f.read()
 
-    model = genai.GenerativeModel("gemini-pro-vision")
-    response = model.generate_content([
-        {"text": f"Goal: {task_goal}. Based on this screenshot, what should the user do next?"},
-        {"image": image_bytes}
-    ])
+prompt = [
+    {"text": "Goal: Uninstall AliExpress. Based on this screenshot, what should the user do next?"},
+    {
+        "inline_data": {
+            "mime_type": "image/png",
+            "data": image_data
+        }
+    }
+]
 
-    result = response.text
-    print("Generated Prompt:")
-    print(result)
-    return result
+model = genai.GenerativeModel("gemini-1.5-flash")
+response = model.generate_content(prompt)
 
-if __name__ == "__main__":
-    import os
+result_text = response.text.strip()
+print("Gemini Output:")
+print(result_text)
 
-    # Replace with your actual API key
-    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+# Good Gemini Result
+def extract_action(text):
+    match = re.search(
+        r'(?:tap|click|select|open|press(?: and hold)?|long-press).*?(?:on|the)?\s+(AliExpress(?: app)?(?: icon)?)',
+        text,
+        re.IGNORECASE
+    )
+    if match:
+        obj = match.group(1).strip().title()
+        return f'Action: CLICK("{obj}")'
+    return "Action: UNKNOWN"
 
-    # Example usage
-    task_goal = "Uninstall Slack"
-    image_path = "screenshot.png"  # Provide your own screenshot
-    generate_prompt_from_image(image_path, task_goal)
+# # Bad Gemini Result
+# def extract_action(text):
+#     match = re.search(
+#         r'(tap|click|select|open|press(?: and hold)?|long-press).*?(?:on|the)?\\s*([A-Z][a-zA-Z0-9\\s\\-]{1,40})',
+#         text,
+#         re.IGNORECASE
+#     )
+#     if match:
+#         verb, obj = match.groups()
+#         obj = re.split(r'\\s+(until|that|to|and)\\b', obj)[0].strip()
+#         obj = obj.rstrip('.').title()
+#         return f'Action: CLICK("{obj}")'
+#     return "Action: UNKNOWN"
+
+
+action_line = extract_action(result_text)
+print(action_line)
+
+os.makedirs("results", exist_ok=True)
+with open("results/gemini_log.txt", "w") as f:
+    f.write("Gemini Prompt Output:\n")
+    f.write(result_text + "\n\n")
+    f.write(action_line + "\n")

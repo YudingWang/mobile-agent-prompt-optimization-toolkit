@@ -6,7 +6,7 @@ It combines prompt generation, gradient-based optimization, and reinforcement le
 
 ---
 
-## 🚀 Overview
+## Overview
 
 The project consists of three core modules:
 
@@ -21,7 +21,7 @@ The project consists of three core modules:
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 | File | Description |
 |------|-------------|
@@ -34,7 +34,7 @@ The project consists of three core modules:
 
 ---
 
-## ⚙️ Getting Started
+## Getting Started
 
 1. Clone the repository:
    ```bash
@@ -55,7 +55,7 @@ The project consists of three core modules:
 
 ---
 
-## 🧪 How to Run
+## How to Run
 
 ```bash
 python gemini_prompting.py
@@ -67,7 +67,7 @@ Each script writes logs into the `results/` folder.
 
 ---
 
-## 🧾 Sample Output
+## Sample Output
 
 ```
 Episode 1: Reward = 0
